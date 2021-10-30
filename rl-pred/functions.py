@@ -8,7 +8,7 @@ import math
 # returns the vector containing stock data from a fixed file
 def getDataVec(key,op):
 	vec = []
-	lines = open(f'data/{op}/{key}.csv', "r").read().splitlines()
+	lines = open(f'./data/{op}/{key}.csv', "r").read().splitlines()
 
 	for line in lines[1:]:
 		vec.append(float(line.split(",")[1]))
@@ -19,7 +19,7 @@ def getDataVec(key,op):
 
 # returns the sigmoid
 def sigmoid(x):
-	return 1 / (1 + math.exp(-x))
+	return 1 / (1 + np.exp(-x))
 
 # returns an an n-day state representation ending at time t
 def getState(data, t, n):
