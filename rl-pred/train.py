@@ -20,30 +20,40 @@ for e in range(episode_count + 1):
     for t in range(l):
         action = agent.act(state)
         reward = 0
-        load_diff=data[t]-data[t-1]
         next_state = getState(data, t + 1, window_size + 1)
-        if action == 1: #higher
-            if(load_diff>0):
-                print("Higher")
+        load_diff=data[t]-data[t-1]
+        high=80*retCpuMax()/100
+        low=20*retCpuMax()/100
+        if action == 0: #Normal Load
+            if(data[t]>low and data[t]<high):
+                print("NormalLoad")
                 reward=1
                 wrong-=1
-		
-        elif action == 2: #lower
-            if(load_diff<0):
-                print("Lower")
+            else:
+                reward=-1
+        elif action == 1: #OverLoad
+            if(data[t]>high):
+                print("OverLoad")
                 reward=1
                 wrong-=1
+            else:
+                reward=-1
+        elif action == 2: #UnderLoad
+            if(data[t]<low):
+                print("UnderLoad")
+                reward=1
+                wrong-=1
+            else:
+                reward=-1
         wrong+=1
         done = True if t == l - 1 else False
         agent.memory.append((state, action, reward, next_state, done))
         state = next_state
         if done:
-        	print("--------------------------------")
-        	print("Done with accuracy->",float(1-(wrong/(l+1))))
-        	print("--------------------------------")
-
+            print("--------------------------------")
+            print("Done with accuracy->",float(1-(wrong/(l+1))))
+            print("--------------------------------")
         if len(agent.memory) > batch_size:
-        	agent.expReplay(batch_size)
-
+            agent.expReplay(batch_size)
     if e % 10 == 0:
     	agent.model.save("models/model_ep" + str(e))
